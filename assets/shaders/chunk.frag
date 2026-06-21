@@ -28,7 +28,7 @@ void main() {
         texColor.rgb *= vec3(0.34, 0.63, 0.17);
     } else if (tintType == 3u) {
         texColor.rgb *= vec3(0.30, 0.52, 0.90);
-        texColor.a = 0.45;
+        texColor.a = 0.25;
     }
 
     texColor.rgb *= vShading * vLightColor;
