@@ -20,11 +20,12 @@ const float FACE_SHADING[6] = float[6](0.75, 0.75, 1.0, 0.40, 0.60, 0.60);
 
 void main() {
     vec4 worldPos = vec4(aPos, 1.0);
-    gl_Position = uProjection * uView * worldPos;
+    vec4 eyePos = uView * worldPos;
+    gl_Position = uProjection * eyePos;
     vUV = aUV;
     vData = aData;
 
-    float dist = length(uView * worldPos);
+    float dist = length(eyePos.xyz);
     uint normalIdx = aData & 0x7u;
     uint shadowLevel = (aData >> 18u) & 0x3u;
     uint skyLight = (aData >> 20u) & 0xFu;
@@ -34,7 +35,14 @@ void main() {
     if (shadowLevel == 3u) shadowMult = 0.4;
     else if (shadowLevel == 2u) shadowMult = 0.6;
     else if (shadowLevel == 1u) shadowMult = 0.8;
-    vShading = FACE_SHADING[normalIdx] * shadowMult;
+
+    uint ao = (aData >> 28u) & 0x3u;
+    float aoMult = 1.0;
+    if (ao == 2u) aoMult = 0.8;
+    else if (ao == 1u) aoMult = 0.6;
+    else if (ao == 0u) aoMult = 0.45;
+
+    vShading = FACE_SHADING[normalIdx] * shadowMult * aoMult;
 
     float sunlightIntensity = pow(clamp((uSunHeight + 0.3) / 0.6, 0.0, 1.0), 0.7);
     float minSkyLight = (skyLight > 0u) ? 4.0 : 0.0;
