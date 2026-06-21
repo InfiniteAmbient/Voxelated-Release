@@ -16,7 +16,7 @@ out float vShading;
 out float vFogFactor;
 out vec3 vLightColor;
 
-const float FACE_SHADING[6] = float[6](0.75, 0.75, 1.0, 0.40, 0.60, 0.60);
+const float FACE_SHADING[6] = float[6](0.60, 0.60, 1.0, 0.50, 0.80, 0.80);
 
 void main() {
     vec4 worldPos = vec4(aPos, 1.0);

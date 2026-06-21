@@ -22,8 +22,16 @@ void main() {
     vec4 texColor = texture(uTextureArray, vec3(vUV, float(layerIdx)));
     if (texColor.a < 0.01) discard;
 
-    if (tintType == 1u && (vData & 0x7u) == 2u) {
-        texColor.rgb *= vec3(0.44, 0.74, 0.28);
+    uint faceIdx = vData & 0x7u;
+    if (tintType == 1u) {
+        if (faceIdx == 2u) {
+            texColor.rgb *= vec3(0.44, 0.74, 0.28);
+        } else if (faceIdx != 3u) {
+            if (texColor.g > texColor.r && texColor.g > texColor.b) {
+                float gray = (texColor.r + texColor.g + texColor.b) * 0.333;
+                texColor.rgb = vec3(gray) * vec3(0.44, 0.74, 0.28) * 1.35;
+            }
+        }
     } else if (tintType == 2u) {
         texColor.rgb *= vec3(0.34, 0.63, 0.17);
     } else if (tintType == 3u) {
